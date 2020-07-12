@@ -79,8 +79,14 @@ namespace ExtendedArithmetic
 			return result;
 		}
 
-		private static string I = iChars[1];
-		private static string[] iChars = { "𝒊", "𝐢", "𝑖", "𝘪", "𝕚", "i" };
+		private static string I;
+		private static string[] iChars;
+
+		static ComplexExtensionMethods()
+		{
+			iChars = new string[] { "𝒊", "𝐢", "𝑖", "𝘪", "𝕚", "i" };
+			I = iChars[1];
+		}
 	}
 
 	public static class IDictionaryExtensionMethods

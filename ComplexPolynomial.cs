@@ -345,20 +345,18 @@ namespace ExtendedArithmetic
 			IComplexPolynomial a = left.Clone();
 			IComplexPolynomial b = right.Clone();
 
-			IComplexPolynomial swap;
-
 			if (b.Degree > a.Degree)
 			{
-				swap = b;
+				IComplexPolynomial swap = b;
 				b = a;
 				a = swap;
 			}
 
-			while (!(b.Terms.Length > 1 || (b.Terms[0].CoEfficient.Real == 0 || b.Terms[0].CoEfficient.Imaginary == 0)))
+			while (!(b.Degree == 0 || (b.Terms[0].CoEfficient.Real == 1 && b.Terms[0].CoEfficient.Imaginary == 0)))
 			{
-				swap = a;
-				a = b;
-				b = ComplexPolynomial.Mod(swap, b);
+				IComplexPolynomial temp = a.Clone();
+				a = b.Clone();
+				b = ComplexPolynomial.Mod(temp, b);
 			}
 
 			if (a.Degree == 0)
@@ -415,7 +413,7 @@ namespace ExtendedArithmetic
 			int sortOrder = mod.CompareTo(poly);
 			if (sortOrder > 0)
 			{
-				return poly;
+				return poly.Clone();
 			}
 			else if (sortOrder == 0)
 			{
@@ -485,8 +483,8 @@ namespace ExtendedArithmetic
 			rem.RemoveZeros();
 			quotient.RemoveZeros();
 
-			remainder = rem;
-			return quotient;
+			remainder = rem.Clone();
+			return quotient.Clone();
 		}
 
 		public static IComplexPolynomial DivideMod(IComplexPolynomial left, IComplexPolynomial right, Complex mod, out IComplexPolynomial remainder)
@@ -722,7 +720,7 @@ namespace ExtendedArithmetic
 			if (left == null) throw new ArgumentNullException(nameof(left));
 			if (right == null) throw new ArgumentNullException(nameof(right));
 
-			Complex[] terms = new Complex[Math.Min(left.Degree, right.Degree) + 1];
+			Complex[] terms = new Complex[Math.Max(left.Degree, right.Degree) + 1];
 			for (int i = 0; i < terms.Length; i++)
 			{
 				Complex l = left[i];
@@ -847,7 +845,7 @@ namespace ExtendedArithmetic
 		{
 			if (string.IsNullOrWhiteSpace(input)) { throw new ArgumentException(); }
 
-			string inputString = input.Replace(" ", "").Replace("-", "+-");
+			string inputString = input.Replace(" ", "").Replace("−", "-").Replace("-", "+-");
 			string[] stringTerms = inputString.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
 
 			if (!stringTerms.Any()) { throw new FormatException(); }
